@@ -1,14 +1,4 @@
-customer-segmentation-ml/
-│
-├── data/
-│   └── Mall_Customers.csv
-│
-├── notebook/
-│   └── customer_segmentation.ipynb
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
+
 # Customer Segmentation using K-Means & Hierarchical Clustering
 
 ## 📌 Overview
@@ -73,44 +63,8 @@ Integration with real-world customer datasets
 
 ---
 
-## 📦 4️⃣ requirements.txt (VERY IMPORTANT)
-
-Create a file called `requirements.txt` and add:
-
-
-
-numpy
-pandas
-matplotlib
-scikit-learn
-jupyter
 
 
 ---
 
-## 🚫 5️⃣ .gitignore (OPTIONAL BUT CLEAN)
 
-
-
-.ipynb_checkpoints/
-pycache/
-.env
-
-
----
-
-## 📤 6️⃣ Upload to GitHub
-
-### Option A: GitHub Website (Easiest)
-1. Go to GitHub → New Repository
-2. Upload files manually
-3. Commit changes
-
-### Option B: Git (Professional)
-```bash
-git init
-git add .
-git commit -m "Customer segmentation using K-Means and hierarchical clustering"
-git branch -M main
-git remote add origin <repo-link>
-git push -u origin main
