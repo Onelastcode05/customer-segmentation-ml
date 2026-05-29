@@ -351,4 +351,55 @@ describe('fetch-models', () => {
       expect(models[0]?.provider).toBe('DeepSeek')
     })
   })
+
+  describe('fetchGroqModels', () => {
+    afterEach(() => {
+      delete process.env.GROQ_API_KEY
+    })
+
+    it('fetches models from groq api and filters embeddings + audio', async () => {
+      mockIsProviderEnabled.mockImplementation(
+        providerId => providerId === 'groq'
+      )
+      process.env.GROQ_API_KEY = 'gsk_test_key'
+
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: async () => ({
+          data: [
+            { id: 'llama3-70b-8192' },
+            { id: 'openai/gpt-oss-120b' },
+            { id: 'whisper-large-v3' }
+          ]
+        })
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const models = await fetchModels.fetchGroqModels()
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://api.groq.com/openai/v1/models',
+        expect.objectContaining({ method: 'GET' })
+      )
+      expect(models.map(m => m.id)).toEqual([
+        'llama3-70b-8192',
+        'openai/gpt-oss-120b'
+      ])
+      expect(models[0]).toMatchObject({
+        provider: 'Groq',
+        providerId: 'groq'
+      })
+    })
+
+    it('returns empty list when provider not enabled', async () => {
+      mockIsProviderEnabled.mockImplementation(() => false)
+      const fetchMock = vi.fn()
+      vi.stubGlobal('fetch', fetchMock)
+
+      const models = await fetchModels.fetchGroqModels()
+      expect(models).toEqual([])
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+  })
 })

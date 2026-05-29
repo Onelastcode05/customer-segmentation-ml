@@ -134,6 +134,19 @@ function passesOpenAICompatibleFilters(id: string): boolean {
   )
 }
 
+function passesGroqFilters(id: string): boolean {
+  const GROQ_EXCLUDED_KEYWORDS = [
+    'embed',
+    'whisper',
+    'audio',
+    'transcribe',
+    'image'
+  ]
+  return !GROQ_EXCLUDED_KEYWORDS.some(keyword =>
+    id.toLowerCase().includes(keyword)
+  )
+}
+
 function passesGatewayFilters(id: string): boolean {
   if (hasDateSnapshotSuffix(id)) {
     return false
@@ -459,6 +472,37 @@ export async function fetchGatewayModels(): Promise<Model[]> {
   }
 }
 
+export async function fetchGroqModels(): Promise<Model[]> {
+  if (!isProviderEnabled('groq')) {
+    return []
+  }
+
+  try {
+    const json = await fetchJson('https://api.groq.com/openai/v1/models', {
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`
+    })
+
+    const data = Array.isArray(json?.data) ? json.data : []
+    return sortModels(
+      dedupeModels(
+        data
+          .map(item => String(item?.id ?? ''))
+          .filter(Boolean)
+          .filter(passesGroqFilters)
+          .map(id => ({
+            id,
+            name: id,
+            provider: 'Groq',
+            providerId: 'groq'
+          }))
+      )
+    )
+  } catch (error) {
+    console.warn('[ModelFetch] Failed to fetch Groq models:', error)
+    return []
+  }
+}
+
 export async function fetchAvailableModels(options?: {
   forceRefresh?: boolean
 }): Promise<ModelsByProvider> {
@@ -469,11 +513,12 @@ export async function fetchAvailableModels(options?: {
     return modelsCache.value
   }
 
-  const [openai, anthropic, google, openaiCompatible, ollama, gateway] =
+  const [openai, anthropic, google, groq, openaiCompatible, ollama, gateway] =
     await Promise.all([
       fetchOpenAIModels(),
       fetchAnthropicModels(),
       fetchGoogleModels(),
+      fetchGroqModels(),
       fetchOpenAICompatibleModels(),
       fetchOllamaModels(),
       fetchGatewayModels()
@@ -484,6 +529,7 @@ export async function fetchAvailableModels(options?: {
       ...openai,
       ...anthropic,
       ...google,
+      ...groq,
       ...openaiCompatible,
       ...ollama,
       ...gateway

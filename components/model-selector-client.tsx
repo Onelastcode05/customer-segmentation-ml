@@ -36,6 +36,7 @@ const PROVIDER_LOGO_BY_ID: Record<string, string> = {
   openai: '/providers/logos/openai.svg',
   anthropic: '/providers/logos/anthropic.svg',
   google: '/providers/logos/google.svg',
+  groq: '/providers/logos/groq.svg',
   gateway: '/providers/logos/gateway.svg',
   'openai-compatible': '/providers/logos/openai-compatible.svg',
   ollama: '/providers/logos/ollama.svg'

@@ -1,8 +1,8 @@
 import { Model } from '@/lib/types/models'
 
 export const DEFAULT_MODEL: Model = {
-  id: 'gpt-5.4-mini',
-  name: 'GPT-5.4 mini',
-  provider: 'OpenAI',
-  providerId: 'openai'
+  id: 'openai/gpt-oss-120b',
+  name: 'gpt-oss-120b',
+  provider: 'Groq',
+  providerId: 'groq'
 }

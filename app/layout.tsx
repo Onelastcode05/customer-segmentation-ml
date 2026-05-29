@@ -73,7 +73,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          'fixed inset-0 flex flex-col font-sans antialiased overflow-hidden',
+          'relative flex min-h-screen w-full flex-col font-sans antialiased overflow-hidden bg-background text-foreground',
           fontSans.variable
         )}
       >
@@ -87,7 +87,7 @@ export default async function RootLayout({
             <SidebarProvider defaultOpen={false}>
               {userId && <AppSidebar />}
               <KeyboardShortcutHandler />
-              <div className="flex flex-col flex-1 min-w-0">
+              <div className="flex min-h-screen flex-col flex-1 min-w-0">
                 <Header user={user} />
                 <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden">
                   <ArtifactRoot>{children}</ArtifactRoot>
